@@ -1,11 +1,11 @@
 # @mello-labs/api-tools
 
-## Installation
+## Installation (NPM not configured yet for this module)
 
 To install this library, run:
 
 ```bash
-$ npm install mello-labs-api-tools --save
+$ npm install @mello-labs/api-tools --save
 ```
 
 ## Consuming your library
@@ -13,7 +13,7 @@ $ npm install mello-labs-api-tools --save
 Once you have published your library to npm, you can import your library in any Angular application by running:
 
 ```bash
-$ npm install mello-labs-api-tools
+$ npm install @mello-labs/api-tools
 ```
 
 and then from your Angular `AppModule`:
@@ -25,7 +25,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 
 // Import your library
-import { SampleModule } from 'mello-labs-api-tools';
+import { SampleModule } from '@mello-labs/api-tools';
 
 @NgModule({
   declarations: [
@@ -66,7 +66,3 @@ To lint all `*.ts` files:
 ```bash
 $ npm run lint
 ```
-
-## License
-
-MIT © [Jerrol Krause](mailto:jkrause@loandepot.com)
