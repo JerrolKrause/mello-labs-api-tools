@@ -18,6 +18,8 @@ src/*.d.ts
 .vs/*
 .vscode/*
 
+/tools
+
 # Windows
 Thumbs.db
 Desktop.ini
