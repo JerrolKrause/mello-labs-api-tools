@@ -1,0 +1,28 @@
+<ng-container *ngIf="state">
+
+    <!--GET/loading -->
+    <div *ngIf="state.loading && !initialLoadComplete" class="p-3"><i class="fa fa-spinner fa-spin"></i> Loading data from server...</div>
+    <div *ngIf="state.loading && initialLoadComplete" class="p-3" [ngClass]="{'toaster': toaster }">
+    <i class="fa fa-spinner fa-spin" [ngClass]="{'toaster-lg': toaster }"></i>
+        <ng-container *ngIf="!toaster">
+            Refreshing data from server...
+        </ng-container>
+    </div>
+    <api-error *ngIf="state.loadError" [error]="state.loadError" [ngClass]="{'toaster': toaster && initialLoadComplete }"></api-error>
+
+    <!-- Create/Update/Delete -->
+    <div *ngIf="state.modified && showSuccess && successVisible" class="alert alert-success icon p-2" [ngClass]="{'toaster': toaster }">
+        <button type="button" class="close" aria-label="Close" (click)="closeSuccess()" *ngIf="!toaster">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        Success!
+    </div>
+
+    <api-error *ngIf="state.modifyError" [error]="state.modifyError" [ngClass]="{'toaster': toaster }"></api-error>
+
+    <!-- Content -->
+    <ng-container *ngIf="state.loaded || (initialLoadComplete && toaster)">
+        <ng-content></ng-content>
+    </ng-container>
+
+</ng-container>
