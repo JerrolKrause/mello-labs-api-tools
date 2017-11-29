@@ -1,8 +1,7 @@
 {
   "name": "@mello-labs/api-tools",
-  "version": "0.1.3",
+  "version": "0.1.4",
 	"scripts": {
-		"prepublish": "tsc",
 		"build": "gulp build",
 		"build:watch": "gulp",
 		"docs": "npm run docs:build",
