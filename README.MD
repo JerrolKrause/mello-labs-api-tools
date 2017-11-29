@@ -1,6 +1,6 @@
 # @mello-labs/api-tools
 
-## Installation (NPM not configured yet for this module)
+## Installation
 
 To install this library, run:
 
