@@ -1,10 +1,7 @@
 {
 	"name": "@mello-labs/api-tools",
-	"version": "0.1.0",
+	"version": "0.1.2",
 	"scripts": {
-		"prepublish": "npm run build",
-		"prepare": "npm run build",
-		"postinstall": "npm run build"
 	},
 	"repository": {
 		"type": "git",
