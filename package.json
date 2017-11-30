@@ -1,6 +1,5 @@
 {
-	"name": "@mello-labs/api-tools",
-	"version": "0.1.4",
+	"name": "npm-package-builder",
 	"scripts": {
 		"build": "gulp build",
 		"build:watch": "gulp",
@@ -13,18 +12,6 @@
 		"playground:build": "tsc -p playground -w",
 		"playground": "concurrently \"npm run build:watch\" \"npm run playground:build\" \"npm run lite\"",
 		"test": "tsc && karma start"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/JerrolKrause/mello-labs-api-tools.git"
-	},
-	"author": "Jerrol Krause <jkrause@loandepot.com>",
-	"keywords": [
-		"angular"
-	],
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/JerrolKrause/mello-labs-api-tools/issues"
 	},
 	"devDependencies": {
 		"@angular/common": "^5.0.0",
@@ -71,7 +58,6 @@
 	"engines": {
 		"node": ">=6.0.0"
 	},
-	"homepage": "https://github.com/JerrolKrause/mello-labs-api-tools#readme",
 	"main": "gulpfile.js",
 	"dependencies": {
 		"abbrev": "^1.1.1",

@@ -1,7 +1,7 @@
 {
 	"name": "@mello-labs/api-tools",
-	"description": "Automation tools for REST API interaction",
-	"version": "0.1.4",
+	"description": "Automation tools for Rest API interaction",
+	"version": "0.1.5",
 	"scripts": {
 	},
 	"repository": {
