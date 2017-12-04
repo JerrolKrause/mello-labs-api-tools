@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, OnChanges } from '@angular/core';
 /**
  <api-error *ngIf="state.modifyError" [error]="state.modifyError"></api-error>
  */
@@ -18,7 +18,7 @@ export interface IErrorApi {
 	templateUrl: './api-error.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ApiErrorComponent implements OnInit, OnChanges {
+export class ApiErrorComponent implements OnChanges {
     /** An error response passed by the API or the application */
 	@Input() error: IErrorApi; // The error object 
 	/** An error response passed by the API or the application */
@@ -36,10 +36,6 @@ export class ApiErrorComponent implements OnInit, OnChanges {
 	) {
 		this.message = 'An unknown error occured';
 		this.showDetails = true;
-	}
-
-	ngOnInit() {
-		
 	}
 
 	public ngOnChanges() {

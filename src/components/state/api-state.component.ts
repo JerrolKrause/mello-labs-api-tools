@@ -1,5 +1,4 @@
-import { Component, OnInit, Input, OnChanges, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { Observable, Subscription } from "rxjs";
+import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 /**
 <api-state [state]="conditions.state" ignore="modifying" [hover]="true" *ngIf="conditionsState$ | async as conditions">
 Transcluded content here
@@ -24,7 +23,7 @@ export interface ApiStatus {
     `],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ApiStateComponent implements OnInit, OnChanges, OnDestroy {
+export class ApiStateComponent implements OnChanges{
 	/** API State */
 	@Input() state: ApiStatus;
     /** Should the success/loading/error messages appear inline or as a toaster pop in the lower right of the screen */
@@ -38,8 +37,6 @@ export class ApiStateComponent implements OnInit, OnChanges, OnDestroy {
 
 	constructor(
 	) { }
-
-	ngOnInit() {}
 
 	ngOnChanges() {
 		if (this.state.loaded) {
@@ -55,7 +52,5 @@ export class ApiStateComponent implements OnInit, OnChanges, OnDestroy {
 		this.successVisible = false;
 		//this.api.resetSuccess();
 	}
-
-	ngOnDestroy() { }
 
 }
