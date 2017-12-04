@@ -1,6 +1,7 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; // Bootstrap
 import { ApiErrorComponent, IErrorApi } from './components/error/api-error.component';
 import { ApiStateComponent, ApiStatus } from './components/state/api-state.component'
 
@@ -20,7 +21,8 @@ export * from './services/api-status.reducer';
 
 @NgModule({
   imports: [
-    CommonModule
+	  CommonModule,
+	  NgbModule.forRoot()
   ],
   declarations: [
 	  ApiErrorComponent,

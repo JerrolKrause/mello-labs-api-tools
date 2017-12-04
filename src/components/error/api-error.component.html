@@ -1,14 +1,15 @@
-<div class="alert alert-danger icon p-2 pl-3 pr-3" *ngIf="isVisible">
+<div class="alert alert-danger icon p-2 pl-3 pr-3" *ngIf="error">
+
     <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
         <span aria-hidden="true">&times;</span>
     </button>
 
     <i class="fa fa-alert"></i> 
-    {{error.errorMsg}}
+	{{message}}
 
-    <ng-container *ngIf="showDetails">
+    <ng-container *ngIf="showDetails && errorOfKeys.length">
         <hr class="mt-2 mb-2"/>
-		<!--
+		
         <ngb-accordion #acc="ngbAccordion" class="accordion-inline">
             <ngb-panel>
                 <ng-template ngbPanelTitle>
@@ -26,7 +27,7 @@
                 </ng-template>
             </ngb-panel>
         </ngb-accordion>
-		-->
+		
     </ng-container>
 
 </div>

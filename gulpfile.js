@@ -21,7 +21,8 @@ gulp.task('clean:dist', function () {
 
   // Delete contents but not dist folder to avoid broken npm links
   // when dist directory is removed while npm link references it.
-  return deleteFolders([distFolder + '/**', '!' + distFolder]);
+  //return deleteFolders([distFolder + '/**', '!' + distFolder]);
+	return deleteFolders([distFolder + '/**', '!' + distFolder, '!' + distFolder + "/index.js"]);
 });
 
 /**
@@ -30,7 +31,7 @@ gulp.task('clean:dist', function () {
  *    when copying to /.tmp.
  */
 gulp.task('copy:source', function () {
-  return gulp.src([`${srcFolder}/**/*`, `!${srcFolder}/node_modules`])
+	return gulp.src([`${srcFolder}/**/*`, `!${srcFolder}/node_modules`])
     .pipe(gulp.dest(tmpFolder));
 });
 

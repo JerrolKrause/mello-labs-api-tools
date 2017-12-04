@@ -8,7 +8,7 @@
             Refreshing data from server...
         </ng-container>
     </div>
-    <api-error *ngIf="state.loadError" [error]="state.loadError" [ngClass]="{'toaster': toaster && initialLoadComplete }"></api-error>
+    <error *ngIf="state.loadError" [error]="state.loadError" [ngClass]="{'toaster': toaster && initialLoadComplete }"></error>
 
     <!-- Create/Update/Delete -->
     <div *ngIf="state.modified && showSuccess && successVisible" class="alert alert-success icon p-2" [ngClass]="{'toaster': toaster }">
@@ -18,7 +18,7 @@
         Success!
     </div>
 
-    <api-error *ngIf="state.modifyError" [error]="state.modifyError" [ngClass]="{'toaster': toaster }"></api-error>
+    <error *ngIf="state.modifyError" [error]="state.modifyError" [ngClass]="{'toaster': toaster }"></error>
 
     <!-- Content -->
     <ng-container *ngIf="state.loaded || (initialLoadComplete && toaster)">

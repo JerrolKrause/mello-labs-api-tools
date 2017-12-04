@@ -2,8 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from "rxjs";
+// TODo: Migrate to letterable operators
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/of';
 
 import { ApiActions } from './api.actions'
 
@@ -17,6 +22,7 @@ export class ApiHttpService {
         private storeSvc: Store<IStore.root>,
 		private routerSvc: Router,
 	) {
+		
     }
 
     /**
@@ -28,8 +34,7 @@ export class ApiHttpService {
         // If this request is not in the cache or updateCache was requested (default behavior), load content into cache
         if (!this.cache[url] || updateCache) {
 	        this.cache[url] = this.httpSvc.get(url)
-		        .publishReplay(1)
-		        .refCount();
+				.share()
         }
         return this.cache[url];
     } // end get
@@ -55,14 +60,15 @@ export class ApiHttpService {
 			        let data = apiMap.map ? apiMap.map(res) : res;
 			        this.storeSvc.dispatch({ type: ApiActions.GET_COMPLETE, payload: { apiMap: apiMap, data: data } });// Load content into store
 			        return data;
-		        }).catch(error => {
+				})
+				.catch(error => {
 			        if (error.status == 401 || error.status == 403) {
 				        error.errorMsg = 'Please log in ';
 				        return this.endSession(error);
 			        } else {
 				        newState = { loading: false, loadError: error, loaded: false };
 				        this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
-				        return Observable.throw(error);
+						return Observable.of(error);
 			        }
 		        });
 		        return this.cache[url];
@@ -92,7 +98,8 @@ export class ApiHttpService {
 				    let dataNew = res ? res : data;
 				    this.storeSvc.dispatch({ type: ApiActions.POST_COMPLETE, payload: { apiMap: apiMap, data: dataNew } });// Load content into store
 				    return Observable.of(res);
-		    }).catch(error => {
+			})
+			.catch(error => {
 				    if (error.status == 401 || error.status == 403) {
 					    error.errorMsg = 'Please log in ';
 					    return this.endSession(error);
@@ -101,7 +108,7 @@ export class ApiHttpService {
 					    // Set status to error
 					    let newState: IStore.ApiStatus = { modifying: false, modified: false, modifyError: error };
 					    this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
-					    return Observable.throw(error);
+						return Observable.of(error);
 				    }
 		    });
     } // end post
@@ -125,7 +132,8 @@ export class ApiHttpService {
 			    let dataNew = res ? res : data;
 			    this.storeSvc.dispatch({ type: ApiActions.PUT_COMPLETE, payload: { apiMap: apiMap, data: dataNew } });// Load content into store
 			    return Observable.of(res);
-		    }).catch(error => {
+			})
+			.catch(error => {
 			    console.warn('PUT Error, handle 403 unauth errors here', error);
 
 			    if (error.status == 401 || error.status == 403) {
@@ -136,7 +144,7 @@ export class ApiHttpService {
 				    // Set status to error
 				    let newState: IStore.ApiStatus = { modifying: false, modified: false, modifyError: error };
 				    this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
-				    return Observable.throw(error);
+					return Observable.of(error);
 			    }
 		    });
     } // end put
@@ -161,7 +169,8 @@ export class ApiHttpService {
 		    this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
 		    this.storeSvc.dispatch({ type: ApiActions.DELETE_COMPLETE, payload: { apiMap: apiMap, data: element } });// Load content into store
 		    return Observable.of(res);
-	    }).catch(error => {
+		})
+		.catch(error => {
 		    console.warn('DELETE Error, handle 403 unauth errors here', error);
 		    if (error.status == 401 || error.status == 403) {
 			    error.errorMsg = 'Please log in ';
@@ -171,7 +180,7 @@ export class ApiHttpService {
 			    // Set status to error
 			    let newState: IStore.ApiStatus = { modifying: false, modified: false, modifyError: error };
 			    this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
-			    return Observable.throw(error);
+				return Observable.of(error);
 		    }
 	    });
     } // end post
@@ -185,7 +194,7 @@ export class ApiHttpService {
 		    window.localStorage.removeItem('token');
 		    window.sessionStorage.clear();
 			this.routerSvc.navigate(['/login'], { queryParams: { session: 'expired' } });
-		    return Observable.throw(error);
+		    return Observable.of(error);
 	  }
 }
 

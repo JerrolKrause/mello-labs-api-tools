@@ -1,7 +1,7 @@
 {
 	"name": "@mello-labs/api-tools",
 	"description": "Automation tools for Rest API interaction",
-	"version": "0.1.6",
+	"version": "0.1.8",
 	"scripts": {
 	},
 	"repository": {
@@ -28,6 +28,7 @@
 		"@ngrx/store": "^4.1.1",
 		"@angular/router": "^5.0.0",
 		"@angular/http": "^5.0.0",
+		"@ng-bootstrap/ng-bootstrap": "1.0.0-beta.5",
 		"rxjs": "^5.5.2",
 		"zone.js": "^0.8.4"
 	}
