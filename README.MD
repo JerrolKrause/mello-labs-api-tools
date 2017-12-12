@@ -1,3 +1,5 @@
+This project is intended for internal loanDepot/mello Labs use and is not publically supported. 
+
 # @mello-labs/api-tools
 
 ## Installation
