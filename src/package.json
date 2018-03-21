@@ -1,35 +1,33 @@
 {
-	"name": "@mello-labs/api-tools",
-	"description": "Automation tools for Rest API interaction",
-	"version": "0.1.8",
-	"scripts": {
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/JerrolKrause/mello-labs-api-tools"
-	},
-	"author": {
-		"name": "Jerrol Krause",
-		"email": "jkrause@loandepot.com"
-	},
-	"keywords": [
-		"angular"
-	],
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/JerrolKrause/mello-labs-api-tools/issues"
-	},
-	"main": "mello-labs-api-tools.umd.js",
-	"module": "mello-labs-api-tools.js",
-	"jsnext:main": "mello-labs-api-tools.js",
-	"typings": "mello-labs-api-tools.d.ts",
-	"peerDependencies": {
-		"@angular/core": "^5.0.0",
-		"@ngrx/store": "^4.1.1",
-		"@angular/router": "^5.0.0",
-		"@angular/http": "^5.0.0",
-		"@ng-bootstrap/ng-bootstrap": "1.0.0-beta.5",
-		"rxjs": "^5.5.2",
-		"zone.js": "^0.8.4"
-	}
+		"name": "@mello-labs/api-tools",
+		"description": "A grid for visualizing and organizing complex data sets",
+		"version": "1.0.3",
+		"repository": {
+				"type": "git",
+				"url": "https://github.com/JerrolKrause/mello-labs-api-tools"
+		},
+		"author": {
+				"name": "Jerrol Krause",
+				"email": "jkrause@loandepot.com"
+		},
+		"keywords": [
+				"angular"
+		],
+		"license": "MIT",
+		"bugs": {
+				"url": "https://github.com/JerrolKrause/mello-labs-api-tools/issues"
+		},
+		"main": "mello-labs-api-tools.umd.js",
+		"module": "mello-labs-api-tools.js",
+		"jsnext:main": "mello-labs-api-tools.js",
+		"typings": "mello-labs-api-tools.d.ts",
+		"peerDependencies": {
+				"@angular/core": "^5.0.0",
+				"@ngrx/store": "^4.1.1",
+				"@angular/router": "^5.0.0",
+				"@angular/http": "^5.0.0",
+				"@ng-bootstrap/ng-bootstrap": "1.0.0-beta.5",
+				"rxjs": "^5.5.2",
+				"zone.js": "^0.8.4"
+		}
 }

@@ -1,7 +1,7 @@
 {
   "generator-angular2-library": {
     "promptValues": {
-      "gitRepositoryUrl": "https://github.com/JerrolKrause/mello-labs-api-tools"
+      "gitRepositoryUrl": "https://github.com/JerrolKrause/mello-labs-datagrid"
     }
   }
 }

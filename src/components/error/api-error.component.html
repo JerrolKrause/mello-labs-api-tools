@@ -1,33 +1,33 @@
-<div class="alert alert-danger icon p-2 pl-3 pr-3" *ngIf="error">
+<div class="alert alert-danger icon p-2 pl-3 pr-3" *ngIf="error" id="errorApi">
 
-    <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
-        <span aria-hidden="true">&times;</span>
-    </button>
+  <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+    <span aria-hidden="true">&times;</span>
+  </button>
 
-    <i class="fa fa-alert"></i> 
-	{{message}}
+  <i class="fa fa-alert"></i>
+  {{errorMessage}}
 
-    <ng-container *ngIf="showDetails && errorOfKeys.length">
-        <hr class="mt-2 mb-2"/>
-		
-        <ngb-accordion #acc="ngbAccordion" class="accordion-inline">
-            <ngb-panel>
-                <ng-template ngbPanelTitle>
-                    <span>See error details:</span>
-                </ng-template>
-                <ng-template ngbPanelContent>
-                    <table class="table table-sm">
-                        <tbody>
-                            <tr *ngFor="let key of errorOfKeys">
-                                <td><strong>{{key}}</strong></td>
-                                <td style="word-break: break-all;">{{error[key]}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </ng-template>
-            </ngb-panel>
-        </ngb-accordion>
-		
-    </ng-container>
+  <ng-container *ngIf="showDetails && errorOfKeys.length">
+    <hr class="mt-2 mb-2" />
+
+    <ngb-accordion #acc="ngbAccordion" class="accordion-inline">
+      <ngb-panel>
+        <ng-template ngbPanelTitle>
+          <span>See error details:</span>
+        </ng-template>
+        <ng-template ngbPanelContent>
+          <table class="table table-sm">
+            <tbody>
+              <tr *ngFor="let key of errorOfKeys">
+                <td><strong>{{key}}</strong></td>
+                <td style="word-break: break-all;">{{error[key]}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+
+  </ng-container>
 
 </div>

@@ -21,8 +21,7 @@ gulp.task('clean:dist', function () {
 
   // Delete contents but not dist folder to avoid broken npm links
   // when dist directory is removed while npm link references it.
-  //return deleteFolders([distFolder + '/**', '!' + distFolder]);
-	return deleteFolders([distFolder + '/**', '!' + distFolder, '!' + distFolder + "/index.js"]);
+  return deleteFolders([distFolder + '/**', '!' + distFolder]);
 });
 
 /**
@@ -31,7 +30,7 @@ gulp.task('clean:dist', function () {
  *    when copying to /.tmp.
  */
 gulp.task('copy:source', function () {
-	return gulp.src([`${srcFolder}/**/*`, `!${srcFolder}/node_modules`])
+  return gulp.src([`${srcFolder}/**/*`, `!${srcFolder}/node_modules`])
     .pipe(gulp.dest(tmpFolder));
 });
 
@@ -126,7 +125,7 @@ gulp.task('rollup:umd', function () {
       // The name to use for the module for UMD/IIFE bundles
       // (required for bundles with exports)
       // See "name" in https://rollupjs.org/#core-functionality
-      name: '@mello-labs/api-tools',
+      name: 'mello-labs-datagrid',
 
       // See "globals" in https://rollupjs.org/#core-functionality
       globals: {
@@ -134,7 +133,7 @@ gulp.task('rollup:umd', function () {
       }
 
     }))
-    .pipe(rename('mello-labs-api-tools.umd.js'))
+    .pipe(rename('mello-labs-datagrid.umd.js'))
     .pipe(gulp.dest(distFolder));
 });
 
