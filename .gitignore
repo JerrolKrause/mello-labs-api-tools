@@ -48,3 +48,6 @@ testem.log
 .DS_Store
 Thumbs.db
 .tmp/
+obj/
+mello-labs-api-tools.csproj
+App.config

@@ -1,4 +1,4 @@
-export enum ApiActions {
+export enum ApiStatusActions {
   RESET = 'RESET',
   STATE_CHANGE = 'STATE_CHANGE',
   RESET_ERRORS = 'RESET_ERRORS',

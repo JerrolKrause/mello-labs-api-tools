@@ -1,14 +1,25 @@
 {
-	"compilerOptions": {
-		"baseUrl": "./src",
-		"experimentalDecorators": true,
-		"moduleResolution": "node",
-		"rootDir": "./src",
-		"lib": [
-			"es2015",
-			"dom"
-		],
-		"skipLibCheck": true,
-		"types": []
-	}
+  "compilerOptions": {
+
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": false,
+
+    "baseUrl": "./src",
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "rootDir": "./src",
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "skipLibCheck": true,
+    "types": []
+  }
 }

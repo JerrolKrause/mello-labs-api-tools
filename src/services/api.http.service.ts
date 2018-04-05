@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 // TODo: Migrate to letterable operators
 import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/combineLatest';
 
-import { ApiActions } from './api.actions'
+import { ApiStatusActions } from './api.actions'
 
 @Injectable()
 export class ApiHttpService {
@@ -20,10 +19,9 @@ export class ApiHttpService {
 
   constructor(
     private httpSvc: HttpClient,
-    private storeSvc: Store<IStore.root>,
+    private storeSvc: Store<IStore.Root>,
     private routerSvc: Router,
   ) {
-
   }
 
   /**
@@ -31,7 +29,7 @@ export class ApiHttpService {
   * @param url - The URL location of the webapi
   * @param updateCache - Refresh the version in the cache
   */
-  public get<T>(url: string, updateCache: boolean = false): Observable<T> {
+  public get<T>(url: string, updateCache = false): Observable<T> {
     // If this request is not in the cache or updateCache was requested (default behavior), load content into cache
     if (!this.cache[url] || updateCache) {
       this.cache[url] = this.httpSvc.get(url)
@@ -46,29 +44,41 @@ export class ApiHttpService {
   * @param id - The location to put the results in the store
   * @param updateCache - Refresh the version in the cache
   */
-  protected getStore<T>(url: string, apiMap?: IStore.ApiMap, updateCache: boolean = false): Observable<T> {
+  protected getStore<T>(url: string, apiMap?: IStore.ApiMap, updateCache = false): Observable<T> {
     // If this request is not in the cache or updateCache was requested (default behavior), load content into cache
     if (this.cache[url] == null || updateCache) {
       // Set status to waiting
       let newState: IStore.ApiStatus = { loading: true, loadError: false, loaded: false };
-      this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+      this.storeSvc.dispatch({
+        type: ApiStatusActions.STATE_CHANGE,
+        payload: { apiMap: apiMap, newState: newState }
+      }); // Update store with new state
       this.cache[url] = this.httpSvc.get(url)
         .share()
         .map(res => {
-          //Set status to success
+          // Set status to success
           newState = { loading: false, loadError: false, loaded: true };
-          this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
-          let data = apiMap.map ? apiMap.map(res) : res;
-          this.storeSvc.dispatch({ type: ApiActions.GET_COMPLETE, payload: { apiMap: apiMap, data: data } });// Load content into store
+          this.storeSvc.dispatch({
+            type: ApiStatusActions.STATE_CHANGE,
+            payload: { apiMap: apiMap, newState: newState }
+          }); // Update store with new state
+          const data = apiMap.map ? apiMap.map(res) : res;
+          this.storeSvc.dispatch({
+            type: ApiStatusActions.GET_COMPLETE,
+            payload: { apiMap: apiMap, data: data }
+          }); // Load content into store
           return data;
         })
         .catch(error => {
-          if (error.status == 401 || error.status == 403) {
+          if (error.status === 401 || error.status === 403) {
             error.errorMsg = 'Please log in ';
             return this.endSession(error);
           } else {
             newState = { loading: false, loadError: error, loaded: false };
-            this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+            this.storeSvc.dispatch({
+              type: ApiStatusActions.STATE_CHANGE,
+              payload: { apiMap: apiMap, newState: newState }
+            }); // Update store with new state
             return Observable.of(error);
           }
         });
@@ -77,7 +87,7 @@ export class ApiHttpService {
       return Observable.of(<any>true);
     }
 
-    //return this.cache[url];
+    // return this.cache[url];
   }
 
   /**
@@ -88,27 +98,39 @@ export class ApiHttpService {
   */
   protected postStore<T>(url: string, apiMap: IStore.ApiMap, data: any): Observable<T> {
     // Set status to modifying
-    let newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
-    this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+    const newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
+    this.storeSvc.dispatch({
+      type: ApiStatusActions.STATE_CHANGE,
+      payload: { apiMap: apiMap, newState: newState }
+    }); // Update store with new state
     return this.httpSvc.post(url, data)
       .map(res => {
         // Set status to complete
-        let newState: IStore.ApiStatus = { modifying: false, modified: true, modifyError: false };
-        this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+        const newStateSuccess: IStore.ApiStatus = { modifying: false, modified: true, modifyError: false };
+        this.storeSvc.dispatch({
+          type: ApiStatusActions.STATE_CHANGE,
+          payload: { apiMap: apiMap, newState: newStateSuccess }
+        }); // Update store with new state
         // Check if the response has a payload or not
-        let dataNew = res ? res : data;
-        this.storeSvc.dispatch({ type: ApiActions.POST_COMPLETE, payload: { apiMap: apiMap, data: dataNew } });// Load content into store
+        const dataNew = res ? res : data;
+        this.storeSvc.dispatch({
+          type: ApiStatusActions.POST_COMPLETE,
+          payload: { apiMap: apiMap, data: dataNew }
+        }); // Load content into store
         return dataNew;
       })
       .catch(error => {
-        if (error.status == 401 || error.status == 403) {
+        if (error.status === 401 || error.status === 403) {
           error.errorMsg = 'Please log in ';
           return this.endSession(error);
         } else {
           error.errorMsg = 'Unable to create ' + apiMap.storeProperty;
           // Set status to error
-          let newState: IStore.ApiStatus = { modifying: false, modified: false, modifyError: error };
-          this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+          const newStateError: IStore.ApiStatus = { modifying: false, modified: false, modifyError: error };
+          this.storeSvc.dispatch({
+            type: ApiStatusActions.STATE_CHANGE,
+            payload: { apiMap: apiMap, newState: newStateError }
+          }); // Update store with new state
           return Observable.of(error);
         }
       });
@@ -120,31 +142,43 @@ export class ApiHttpService {
   * @param data - The data to pass to the server
   */
   protected upsertStore<T>(url: string, apiMap: IStore.ApiMap, data: any): Observable<T> {
-    //console.warn('Upserting ', url, apiMap, data);
+    // console.warn('Upserting ', url, apiMap, data);
     // Set status to modifying
-    let newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
-    this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+    const newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
+    this.storeSvc.dispatch({
+      type: ApiStatusActions.STATE_CHANGE,
+      payload: { apiMap: apiMap, newState: newState }
+    }); // Update store with new state
     return this.httpSvc.put(url, data)
       .map(res => {
         // Set status to complete
-        let newState: IStore.ApiStatus = { modifying: false, modified: true, modifyError: false };
-        this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+        const newStateSuccess: IStore.ApiStatus = { modifying: false, modified: true, modifyError: false };
+        this.storeSvc.dispatch({
+          type: ApiStatusActions.STATE_CHANGE,
+          payload: { apiMap: apiMap, newState: newStateSuccess }
+        }); // Update store with new state
         // Check if the response has a payload or not, if not then this is an upSert
-        let dataNew = res ? res : data;
-        this.storeSvc.dispatch({ type: ApiActions.UPSERT_COMPLETE, payload: { apiMap: apiMap, data: dataNew } });// Load content into store
+        const dataNew = res ? res : data;
+        this.storeSvc.dispatch({
+          type: ApiStatusActions.UPSERT_COMPLETE,
+          payload: { apiMap: apiMap, data: dataNew }
+        }); // Load content into store
         return dataNew;
       })
       .catch(error => {
         console.warn('PUT Error, handle 403 unauth errors here', error);
 
-        if (error.status == 401 || error.status == 403) {
+        if (error.status === 401 || error.status === 403) {
           error.errorMsg = 'Please log in ';
           return this.endSession(error);
         } else {
           error.errorMsg = 'Unable to update ' + apiMap.storeProperty;
           // Set status to error
-          let newState: IStore.ApiStatus = { modifying: false, modified: false, modifyError: error };
-          this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+          const newStateError: IStore.ApiStatus = { modifying: false, modified: false, modifyError: error };
+          this.storeSvc.dispatch({
+            type: ApiStatusActions.STATE_CHANGE,
+            payload: { apiMap: apiMap, newState: newStateError }
+          }); // Update store with new state
           return Observable.of(error);
         }
       });
@@ -156,32 +190,43 @@ export class ApiHttpService {
   * @param data - The data to pass to the server
   */
   protected putStore<T>(url: string, apiMap: IStore.ApiMap, data: any): Observable<T> {
-    //console.warn('Putting ', url, apiMap, data);
+    // console.warn('Putting ', url, apiMap, data);
     // Set status to modifying
-    let newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
-    this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+    const newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
+    this.storeSvc.dispatch({
+      type: ApiStatusActions.STATE_CHANGE,
+      payload: { apiMap: apiMap, newState: newState }
+    }); // Update store with new state
     return this.httpSvc.put(url, data)
       .map(res => {
-        debugger;
         // Set status to complete
-        let newState: IStore.ApiStatus = { modifying: false, modified: true, modifyError: false };
-        this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+        const newStateSuccess: IStore.ApiStatus = { modifying: false, modified: true, modifyError: false };
+        this.storeSvc.dispatch({
+          type: ApiStatusActions.STATE_CHANGE,
+          payload: { apiMap: apiMap, newState: newStateSuccess }
+        }); // Update store with new state
         // Check if the response has a payload or not, if not then this is an upSert
-        let dataNew = res ? res : data;
-        this.storeSvc.dispatch({ type: ApiActions.PUT_COMPLETE, payload: { apiMap: apiMap, data: dataNew } });// Load content into store
+        const dataNew = res ? res : data;
+        this.storeSvc.dispatch({
+          type: ApiStatusActions.PUT_COMPLETE,
+          payload: { apiMap: apiMap, data: dataNew }
+        }); // Load content into store
         return dataNew;
       })
       .catch(error => {
         console.warn('PUT Error, handle 403 unauth errors here', error);
 
-        if (error.status == 401 || error.status == 403) {
+        if (error.status === 401 || error.status === 403) {
           error.errorMsg = 'Please log in ';
           return this.endSession(error);
         } else {
           error.errorMsg = 'Unable to update ' + apiMap.storeProperty;
           // Set status to error
-          let newState: IStore.ApiStatus = { modifying: false, modified: false, modifyError: error };
-          this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+          const newStateError: IStore.ApiStatus = { modifying: false, modified: false, modifyError: error };
+          this.storeSvc.dispatch({
+            type: ApiStatusActions.STATE_CHANGE,
+            payload: { apiMap: apiMap, newState: newStateError }
+          }); // Update store with new state
           return Observable.of(error);
         }
       });
@@ -195,29 +240,41 @@ export class ApiHttpService {
   */
   protected deleteStore<T>(url: string, apiMap: IStore.ApiMap, element: any | any[]): Observable<T> {
     // Set status to modifying
-    let newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
-    this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+    const newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
+    this.storeSvc.dispatch({
+      type: ApiStatusActions.STATE_CHANGE,
+      payload: { apiMap: apiMap, newState: newState }
+    }); // Update store with new state
 
     // Delete doesn't natively support a body so this adds it in for deleting collections or other uncommon operations
     return this.httpSvc.request('delete', url, { body: element })
-      //return this.httpSvc.delete(url, , { body: element }) // Does not work with body, add back in when it does
+      // return this.httpSvc.delete(url, , { body: element }) // Does not work with body, add back in when it does
       .map(res => {
         // Set status to complete
-        let newState: IStore.ApiStatus = { modifying: false, modified: true, modifyError: false };
-        this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
-        this.storeSvc.dispatch({ type: ApiActions.DELETE_COMPLETE, payload: { apiMap: apiMap, data: element } });// Load content into store
+        const newStateSuccess: IStore.ApiStatus = { modifying: false, modified: true, modifyError: false };
+        this.storeSvc.dispatch({
+          type: ApiStatusActions.STATE_CHANGE,
+          payload: { apiMap: apiMap, newState: newStateSuccess }
+        }); // Update store with new state
+        this.storeSvc.dispatch({
+          type: ApiStatusActions.DELETE_COMPLETE,
+          payload: { apiMap: apiMap, data: element }
+        }); // Load content into store
         return res;
       })
       .catch(error => {
         console.warn('DELETE Error, handle 403 unauth errors here', error);
-        if (error.status == 401 || error.status == 403) {
+        if (error.status === 401 || error.status === 403) {
           error.errorMsg = 'Please log in ';
           return this.endSession(error);
         } else {
           error.errorMsg = 'Unable to delete ' + apiMap.storeProperty;
           // Set status to error
-          let newState: IStore.ApiStatus = { modifying: false, modified: false, modifyError: error };
-          this.storeSvc.dispatch({ type: ApiActions.STATE_CHANGE, payload: { apiMap: apiMap, newState: newState } });// Update store with new state
+          const newStateError: IStore.ApiStatus = { modifying: false, modified: false, modifyError: error };
+          this.storeSvc.dispatch({
+            type: ApiStatusActions.STATE_CHANGE,
+            payload: { apiMap: apiMap, newState: newStateError }
+          }); // Update store with new state
           return Observable.of(error);
         }
       });
@@ -230,26 +287,25 @@ export class ApiHttpService {
    */
   protected getStatuses(statuses: Observable<IStore.ApiStatus> | Observable<IStore.ApiStatus>[]) {
     // If this is an array, pass the array, if single load into array for combineLatest
-    let statusesNew = Array.isArray(statuses) ? statuses : [statuses];
+    const statusesNew = Array.isArray(statuses) ? statuses : [statuses];
 
-    return Observable.combineLatest(statusesNew).map((statuses) => {
-      
-      if (statuses) {
+    return Observable.combineLatest(statusesNew).map(status => {
+      if (status) {
         // Set default globals. Used to create final end state
         let loading = false;
         let loaded = false;
         let loadError = false;
 
         // Loop through all input statuses and rollup individual status to global status
-        statuses.forEach(status => {
-          if (status && status.loading) {
+        status.forEach(statusSingle => {
+          if (statusSingle && statusSingle.loading) {
             loading = true;
           }
-          if (status && status.loaded) {
+          if (statusSingle && statusSingle.loaded) {
             loaded = true;
           }
-          if (status && status.loadError) {
-            loadError = status.loadError;
+          if (statusSingle && statusSingle.loadError) {
+            loadError = statusSingle.loadError;
           }
 
         });
@@ -257,25 +313,20 @@ export class ApiHttpService {
         // Figure out which status state to return
         // If any errors, return an error state
         if (loadError) {
-          //console.log('loadError', loadError);
           return {
             loading: false,
             loaded: false,
             loadError: loadError
           }
-        }
+        } else if (loading) {
         // If no errors but any endpoint is still loading, return loading
-        else if (loading) {
-          //console.log('loading', loading);
           return {
             loading: true,
             loaded: false,
             loadError: false
           }
-        }
-        // If all endpoints return loaded and no errors of loading, return loaded
-        else if (loaded && !loading && !loadError) {
-          //console.log('loaded', loaded);
+        } else if (loaded && !loading && !loadError) {
+          // If all endpoints return loaded and no errors of loading, return loaded
           return {
             loading: false,
             loaded: true,
@@ -298,7 +349,7 @@ export class ApiHttpService {
     this.cache = {};
     window.localStorage.removeItem('token');
     window.sessionStorage.clear();
-    this.storeSvc.dispatch({ type: ApiActions.RESET, payload: null });// Clear out store on errors for security
+    this.storeSvc.dispatch({ type: ApiStatusActions.RESET, payload: null }); // Clear out store on errors for security
     this.routerSvc.navigate(['/login'], { queryParams: { session: 'expired' } });
     return Observable.of(error);
   }
@@ -310,8 +361,8 @@ export declare namespace IStore {
   *************************/
 
   /** API Store */
-  interface api {
-    //users?: any[]; // Store response
+  interface Api {
+    // users?: any[]; // Store response
     // Example of Store typing with mapped response
     users?: Mapped<{
       user: string;
@@ -329,7 +380,7 @@ export declare namespace IStore {
   }
 
   /** UI Store */
-  interface ui {
+  interface Ui {
     modal?: {
       modalId: string;
       options: {};
@@ -343,14 +394,14 @@ export declare namespace IStore {
   *************************/
 
   /** The root store which contains the other stores */
-  interface root {
-    api?: api;
-    ui?: ui;
-    apiStatus?: apiStatus;
+  interface Root {
+    api?: Api;
+    ui?: Ui;
+    apiStatus?: ApiState;
   }
 
   /** API status store */
-  interface apiStatus {
+  interface ApiState {
     [key: string]: ApiStatus;
   }
 
