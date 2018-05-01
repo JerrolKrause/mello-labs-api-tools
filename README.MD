@@ -10,6 +10,11 @@ To install this library, run:
 $ npm install @mello-labs/api-tools --save
 ```
 
+## Example Implementation
+
+https://github.com/JerrolKrause/mello-labs-angular-starter/tree/master/src/app/shared/stores/api
+
+
 ## Consuming your library
 
 Once you have published your library to npm, you can import your library in any Angular application by running:
@@ -36,8 +41,8 @@ import { ApiToolsModule, ApiReducer, ApiStatusReducer } from '@mello-labs/api-to
   imports: [
     BrowserModule,
 
-	 // Specify your library as an import
-	StoreModule.forRoot({ api: ApiReducer, apiStatus: ApiStatusReducer}),
+    // Add the ApiReducer and the ApiStatusReducer to NGRX
+    StoreModule.forRoot({ api: ApiReducer, apiStatus: ApiStatusReducer}),
     // Specify your library as an import
     ApiToolsModule.forRoot()
   ],
@@ -54,12 +59,12 @@ import { ApiHttpService, ApiActions } from '@mello-labs/api-tools';
 
 export class ApiService extends ApiHttpService {
 
-    constructor(
-		private http: HttpClient,
-        private store: Store<IStore.root>,
-        private router: Router
+  constructor(
+  private http: HttpClient,
+  private store: Store<IStore.root>,
+  private router: Router
 	) {
-		super(http, store, router);
+    super(http, store, router);
 	}
 
     /** Sample store usage */
@@ -72,6 +77,34 @@ export class ApiService extends ApiHttpService {
     }
 }
 ```
+
+Create an action for each store property.
+
+```typescript
+/** String enum of store properties/primary keys */
+export enum ApiActions {
+  // Example
+  users = 'users',
+}
+
+```
+
+In the Api map, specify the relationship from the api to your store.
+
+```typescript
+import { AppStore } from '$shared';
+import { ApiActions } from './api.actions';
+
+export const ApiMap: AppStore.ApiMapping = {
+  // Users Example
+  users: {
+    endpoint: '//jsonplaceholder.typicode.com/users',
+    storeProperty: ApiActions.users,
+    uniqueId: 'id',
+  },
+};
+```
+
 
 Once your library is imported, you can use its components, directives and pipes in your Angular application:
 

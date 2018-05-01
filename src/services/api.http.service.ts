@@ -96,7 +96,7 @@ export class ApiHttpService {
   * @param id - The location to put the results in the store
   * @param data - The data to pass to the server
   */
-  protected postStore<T>(url: string, apiMap: IStore.ApiMap, data: any): Observable<T> {
+  protected postStore<T>(url: string, apiMap: IStore.ApiMap, data: T): Observable<T> {
     // Set status to modifying
     const newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
     this.storeSvc.dispatch({
@@ -141,7 +141,7 @@ export class ApiHttpService {
   * @param url - The URL location of the webapi
   * @param data - The data to pass to the server
   */
-  protected upsertStore<T>(url: string, apiMap: IStore.ApiMap, data: any): Observable<T> {
+  protected upsertStore<T>(url: string, apiMap: IStore.ApiMap, data: T | T[]): Observable<T> {
     // console.warn('Upserting ', url, apiMap, data);
     // Set status to modifying
     const newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
@@ -189,7 +189,7 @@ export class ApiHttpService {
   * @param url - The URL location of the webapi
   * @param data - The data to pass to the server
   */
-  protected putStore<T>(url: string, apiMap: IStore.ApiMap, data: any): Observable<T> {
+  protected putStore<T>(url: string, apiMap: IStore.ApiMap, data: T | T[]): Observable<T> {
     // console.warn('Putting ', url, apiMap, data);
     // Set status to modifying
     const newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
@@ -238,7 +238,7 @@ export class ApiHttpService {
   * @param apiMap - The ApiMap object
   * @param element - The element or collection of elements being deleted
   */
-  protected deleteStore<T>(url: string, apiMap: IStore.ApiMap, element: any | any[]): Observable<T> {
+  protected deleteStore<T>(url: string, apiMap: IStore.ApiMap, element: T | T[]): Observable<T> {
     // Set status to modifying
     const newState: IStore.ApiStatus = { modifying: true, modified: false, modifyError: false };
     this.storeSvc.dispatch({
@@ -285,7 +285,7 @@ export class ApiHttpService {
    * Useful for when the app needs multiple http calls and you only want a single status for all
    * @param statuses - A single observable or an array of observables
    */
-  protected getStatuses(statuses: Observable<IStore.ApiStatus> | Observable<IStore.ApiStatus>[]) {
+  public getStatuses(statuses: Observable<IStore.ApiStatus> | Observable<IStore.ApiStatus>[]) {
     // If this is an array, pass the array, if single load into array for combineLatest
     const statusesNew = Array.isArray(statuses) ? statuses : [statuses];
 

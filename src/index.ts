@@ -4,18 +4,12 @@ import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; // Bootstrap
 import {
   ApiErrorComponent,
-  //IErrorApi
 } from './components/error/api-error.component';
 import {
   ApiStateComponent,
-  //ApiStatus
 } from './components/state/api-state.component';
 
-//import { ApiHttpService } from './services/api.http.service';
-//import { ApiStatusActions } from './services/api.actions';
-//import { ApiReducer } from './services/api.reducer';
-//import { ApiStatusReducer } from './services/api-status.reducer';
-
+export * from './utils/api-utils';
 export * from './components/error/api-error.component';
 export * from './components/state/api-state.component';
 export * from './services/api.actions';
