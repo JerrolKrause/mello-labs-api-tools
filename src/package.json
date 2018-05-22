@@ -1,7 +1,6 @@
 {
   "name": "@mello-labs/api-tools",
   "description": "Automation tools for Rest API interaction and NGRX",
-  "version": "3.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/JerrolKrause/mello-labs-api-tools"
@@ -10,9 +9,7 @@
     "name": "Jerrol Krause",
     "email": "jkrause@loandepot.com"
   },
-  "keywords": [
-    "angular"
-  ],
+  "keywords": ["angular"],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/JerrolKrause/mello-labs-api-tools/issues"

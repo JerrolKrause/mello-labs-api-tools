@@ -17,11 +17,13 @@ export interface ApiStatus {
 @Component({
   selector: 'api-state',
   templateUrl: './api-state.component.html',
-  styles: [`
+  styles: [
+    `
         .toaster{position:fixed;bottom:10px;right:20px;z-index:1000;}
         .toaster-lg{font-size:3rem;}
-    `],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApiStateComponent implements OnChanges {
   /** API State */
@@ -35,8 +37,7 @@ export class ApiStateComponent implements OnChanges {
   /** Toggle the visibility of the success message */
   public successVisible = true;
 
-  constructor(
-  ) { }
+  constructor() {}
 
   ngOnChanges() {
     if (this.state.loaded) {
@@ -52,5 +53,4 @@ export class ApiStateComponent implements OnChanges {
     this.successVisible = false;
     //this.api.resetSuccess();
   }
-
 }

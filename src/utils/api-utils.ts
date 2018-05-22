@@ -2,7 +2,6 @@
  * Helper utilities for desktop interaction
  */
 export class ApiUtils {
-
   /**
   * Replace/upsert/delete objects in an array
   * @param srcArray A source array which will be updated by objects from the records argument
@@ -13,8 +12,12 @@ export class ApiUtils {
     upsert: Update existing objects if found, add unfound objects to beginning of array
     delete: Remove found objects from the array
   */
-  public static updateRecords<T>(srcArray: T[], records: T | T[], uniqueID: string | string[], operation: 'replace' | 'upsert' | 'delete'): T[] {
-
+  public static updateRecords<T>(
+    srcArray: T[],
+    records: T | T[],
+    uniqueID: string | string[],
+    operation: 'replace' | 'upsert' | 'delete',
+  ): T[] {
     // If unique ID is a string, drop it into an array so a single method can be used to iterate
     const uniqueIDNew = typeof uniqueID === 'string' ? [uniqueID] : uniqueID;
     // If newrecords is an object, drop it into an array so a single method can be used to iterate
@@ -42,7 +45,6 @@ export class ApiUtils {
 
       // If the current record key is found in the dictionary, update the reference
       if (dict[recordCurrentKey]) {
-
         // If operation is upsert or replace
         if (operation === 'upsert' || operation === 'replace') {
           // Update record
@@ -62,7 +64,6 @@ export class ApiUtils {
       if (matches === uniqueIDNew.length + 1) {
         break;
       }
-
     }
 
     // UPSERT
@@ -80,5 +81,4 @@ export class ApiUtils {
     // If records were updated, return new immutable instance. Otherwise return untouched srcArray
     return recordsUpdated ? Array.from(srcArray) : srcArray;
   } // End updateRecords
-
 }
